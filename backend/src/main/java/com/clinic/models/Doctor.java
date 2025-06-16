@@ -1,9 +1,6 @@
-package com.project_back_end.models;
+package com.clinic.models;  // Change the package to match your project structure
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import javax.persistence.*;
 
 @Entity
 public class Doctor {
@@ -16,7 +13,9 @@ public class Doctor {
     private String specialization;
     private boolean availabilityStatus;
 
-    public Doctor() {}
+    // Constructors
+    public Doctor() {
+    }
 
     public Doctor(String name, String specialization, boolean availabilityStatus) {
         this.name = name;
@@ -24,6 +23,7 @@ public class Doctor {
         this.availabilityStatus = availabilityStatus;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -55,6 +55,17 @@ public class Doctor {
     public void setAvailabilityStatus(boolean availabilityStatus) {
         this.availabilityStatus = availabilityStatus;
     }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", availabilityStatus=" + availabilityStatus +
+                '}';
+    }
 }
+
 
 
