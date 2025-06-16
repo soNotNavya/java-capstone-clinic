@@ -1,27 +1,35 @@
-package com.clinic.models;
+package com.project_back_end.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+@Entity
 public class Doctor {
-    private int doctorId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String specialization;
     private boolean availabilityStatus;
 
-    public Doctor() {
-    }
+    public Doctor() {}
 
-    public Doctor(int doctorId, String name, String specialization, boolean availabilityStatus) {
-        this.doctorId = doctorId;
+    public Doctor(String name, String specialization, boolean availabilityStatus) {
         this.name = name;
         this.specialization = specialization;
         this.availabilityStatus = availabilityStatus;
     }
 
-    public int getDoctorId() {
-        return doctorId;
+    public Long getId() {
+        return id;
     }
 
-    public void setDoctorId(int doctorId) {
-        this.doctorId = doctorId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -47,15 +55,6 @@ public class Doctor {
     public void setAvailabilityStatus(boolean availabilityStatus) {
         this.availabilityStatus = availabilityStatus;
     }
-
-    @Override
-    public String toString() {
-        return "Doctor{" +
-                "doctorId=" + doctorId +
-                ", name='" + name + '\'' +
-                ", specialization='" + specialization + '\'' +
-                ", availabilityStatus=" + availabilityStatus +
-                '}';
-    }
 }
+
 
