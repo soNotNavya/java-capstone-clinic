@@ -1,37 +1,34 @@
-package com.project_backend.models;
+package com.clinic.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long appointmentId;
 
-    @Column(nullable = false)
     private Long doctorId;
+    private String patientName;
+    private LocalDateTime appointmentTime;
 
-    @Column(nullable = false)
-    private Long patientId;
+    public Appointment() {}
 
-    @Column(nullable = false)
-    private String appointmentTime;
-
-    private String status;
-
-    // Getters and setters
-
-    public Long getId() {
-        return id;
+    public Appointment(Long doctorId, String patientName, LocalDateTime appointmentTime) {
+        this.doctorId = doctorId;
+        this.patientName = patientName;
+        this.appointmentTime = appointmentTime;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // Getters and Setters
+    public Long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public Long getDoctorId() {
@@ -42,27 +39,17 @@ public class Appointment {
         this.doctorId = doctorId;
     }
 
-    public Long getPatientId() {
-        return patientId;
+    public String getPatientName() {
+        return patientName;
     }
 
-    public void setPatientId(Long patientId) {
-        this.patientId = patientId;
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
     }
 
-    public String getAppointmentTime() {
+    public LocalDateTime getAppointmentTime() {
         return appointmentTime;
     }
 
-    public void setAppointmentTime(String appointmentTime) {
-        this.appointmentTime = appointmentTime;
-    }
+    public void setAppointment
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-}
