@@ -64,6 +64,14 @@ public class Doctor {
                 ", specialization='" + specialization + '\'' +
                 ", availabilityStatus=" + availabilityStatus +
                 '}';
+        
+        private String password; // Encrypted
+
+// Add getter/setter
+public String getPassword() { return password; }
+public void setPassword(String password) {
+    this.password = passwordEncoder.encode(password); 
+}
     }
 }
 
