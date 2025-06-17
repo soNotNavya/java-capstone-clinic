@@ -2,44 +2,64 @@ package com.project.services;
 
 import com.project.models.Appointment;
 import com.project.repositories.AppointmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+/**
+ * Service for managing appointment operations in the clinic system.
+ * Uses manual dependency injection instead of Spring.
+ */
 public class AppointmentService {
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    // Book a new appointment (this was missing)
+    
+    private final AppointmentRepository appointmentRepository;
+    
+    // Manual dependency injection via constructor
+    public AppointmentService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
+    
+    /**
+     * Books a new appointment
+     * @param appointment The appointment to book
+     * @return The saved appointment
+     * @throws IllegalArgumentException if appointment data is invalid
+     */
     public Appointment bookAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment); // Save to DB
+        if (appointment == null || appointment.getDoctor() == null 
+            || appointment.getPatient() == null || appointment.getDateTime() == null) {
+            throw new IllegalArgumentException("Invalid appointment data");
+        }
+        
+        // Check for availability
+        if (!isTimeSlotAvailable(appointment)) {
+            throw new IllegalStateException("Doctor is already booked at this time");
+        }
+        
+        return appointmentRepository.save(appointment);
     }
-
-    // Get appointments by doctor ID
+    
+    private boolean isTimeSlotAvailable(Appointment appointment) {
+        List<Appointment> existing = appointmentRepository
+            .findByDoctorAndDate(
+                appointment.getDoctor().getId(),
+                appointment.getDateTime().toLocalDate()
+            );
+        
+        return existing.stream()
+            .noneMatch(a -> a.getDateTime().equals(appointment.getDateTime()));
+    }
+    
     public List<Appointment> getAppointmentsByDoctor(Long doctorId) {
-        return appointmentRepository.findAll()
-            .stream()
-            .filter(app -> app.getDoctor().getId().equals(doctorId))
-            .collect(Collectors.toList());
+        return appointmentRepository.findByDoctorId(doctorId);
     }
-
-    // Get appointments by patient name
+    
     public List<Appointment> getAppointmentsByPatient(String patientName) {
-        return appointmentRepository.findAll()
-            .stream()
-            .filter(app -> app.getPatient().getName().equalsIgnoreCase(patientName))
+        return appointmentRepository.findAll().stream()
+            .filter(a -> a.getPatient().getName().equalsIgnoreCase(patientName))
             .collect(Collectors.toList());
     }
-
-    // Get appointments by date
-    public List<Appointment> getAppointmentsByDate(String date) {
-        return appointmentRepository.findAll()
-            .stream()
-            .filter(app -> app.getDate().equals(date))
-            .collect(Collectors.toList());
+    
+    public List<Appointment> getAppointmentsByDate(LocalDate date) {
+        return appointmentRepository.findByDate(date);
     }
 }
