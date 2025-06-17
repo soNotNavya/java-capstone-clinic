@@ -1,54 +1,36 @@
-package com.project.services;
+package com.project.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 
-@Service
 public class TokenService {
-    // 1. Secret key for signing tokens (replace with your own in production)
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final long EXPIRATION_MS = 86400000; // 24 hours
 
-    // 2. Generate JWT token
-    public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_MS);
+    // Secret key for signing the JWT
+    private static final String SECRET = "my-super-secret-key-for-jwt-signing-which-should-be-long-enough";
 
+    // Token validity: e.g., 24 hours
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
+
+    /**
+     * Generates a JWT token using the provided email.
+     */
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SECRET_KEY)
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // 3. Validate JWT token
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // 4. Extract username from token
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    /**
+     * Returns the signing key using the configured secret.
+     */
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 }
